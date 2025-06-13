@@ -1,12 +1,27 @@
 import streamlit as st
 import numpy as np
 import pickle
+import os
+import gdown
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-# Load model and tokenizer
-model = load_model('wiki_model.h5')
-with open('tokenizerr_wiki.pickle', 'rb') as handle:
+MODEL_PATH = 'wiki_model.h5'
+TOKENIZER_PATH = 'tokenizerr_wiki.pickle'
+
+# Google Drive file ID for your model
+MODEL_FILE_ID = '1x4Quqg-Jo_NgB4DA1wAnD687dJL2_A7b'
+
+# Download model if not present
+if not os.path.exists(MODEL_PATH):
+    st.info("📥 Downloading model from Google Drive...")
+    gdown.download(f'https://drive.google.com/uc?id={MODEL_FILE_ID}', MODEL_PATH, quiet=False)
+
+# Load model
+model = load_model(MODEL_PATH)
+
+# Load tokenizer
+with open(TOKENIZER_PATH, 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Predict next word
